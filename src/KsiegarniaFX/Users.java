@@ -19,4 +19,11 @@ public class Users {
     public double getHajs(){
         return this.wallet;
     }
+
+    public String getName(){
+        return this.name;
+    }
+    public String getPsswd(){
+        return this.psswd;
+    }
 }

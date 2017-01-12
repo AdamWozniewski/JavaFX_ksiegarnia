@@ -27,4 +27,8 @@ public class Ksiazka {
     public int getId(){
         return this.id;
     }
+
+    public boolean getAccess(){
+        return this.access;
+    }
 }

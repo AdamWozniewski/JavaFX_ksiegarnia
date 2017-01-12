@@ -25,7 +25,19 @@ public class Aplikacja extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         BorderPane layout = new BorderPane();
+        BorderPane layout_login = new BorderPane();
+
+        Scene login = new Scene(layout_login,300,300);
         Scene s1= new Scene(layout,600,600);
+
+        //Login
+        TextField loginTF=new TextField("podaj login");
+        TextField psswdTF=new TextField("podaj haslo");
+        Button getLogin=new Button("zaloguj");
+
+
+
+
 
         // baza danych książek, moze być pobierane z innego pliku
         ArrayList<Ksiazka> tablicaKsiazek = new ArrayList<Ksiazka>();
@@ -33,9 +45,10 @@ public class Aplikacja extends Application {
         tablicaKsiazek.add(new Ksiazka(2,"Ksiazka 2","autor 2","098sadgf98sdg980s"));
 
         // baza danych Użytkowników, moze być pobierane z innego pliku;
-        ArrayList<Users> tablicaUżytkowników = new ArrayList<Users>();
-        tablicaUżytkowników.add(new Users("ziome1","ziomek1","ziomek1"));
-        tablicaUżytkowników.add(new Users("admin","admin","admin"));
+        ArrayList<Users> tablicaUzytkowników = new ArrayList<Users>();
+        tablicaUzytkowników.add(new Users("ziome1","ziomek1","ziomek1"));
+        tablicaUzytkowników.add(new Users("admin","admin","admin"));
+
 
 
 
@@ -43,6 +56,24 @@ public class Aplikacja extends Application {
         Button b1 =new Button("Wypożycz");
         Button b2 =new Button("Doładuj Portfel");
         Button b3 =new Button("Kwota w portfelu");
+
+        b1.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+
+                VBox vBoxAllKnigi=new VBox();
+                Label[] lab;
+                lab = new Label[tablicaKsiazek.size()];
+                for (Ksiazka ks:tablicaKsiazek) {
+                    if(ks.getAccess()==true){
+                        vBoxAllKnigi.getChildren().add(new Label(ks.getTitle()));
+                    }
+                }
+
+                vBoxAllKnigi.setAlignment(Pos.CENTER);
+                layout.setCenter(vBoxAllKnigi);
+            }
+        });
 
         b2.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -52,11 +83,20 @@ public class Aplikacja extends Application {
                 Label labelSetWallet = new Label("Wpisz kwotę za którą chcesz doładowac konto");
                 TextField textFieldWallet= new TextField("Kwota: ");
 
-                textFieldWallet.getText();
 
+
+                Button OK = new Button("Doładuj");
+//
 //                textFieldWallet.setText("text");
-
-                vBoxWallet.getChildren().addAll(labelSetWallet,textFieldWallet);
+//
+                OK.setOnAction(new EventHandler<ActionEvent>(){
+                    @Override
+                    public void handle(ActionEvent event) {
+                        double hajs=Double.parseDouble(textFieldWallet.getText());
+                        tablicaUzytkowników.get(0).upgradeWallet(hajs);
+                    }
+                });
+                vBoxWallet.getChildren().addAll(labelSetWallet,textFieldWallet,OK);
                 vBoxWallet.setAlignment(Pos.CENTER);
                 layout.setCenter(vBoxWallet);
             }
@@ -66,7 +106,7 @@ public class Aplikacja extends Application {
             @Override
             public void handle(ActionEvent event) {
                 VBox vBoxWallet=new VBox();
-                Label labelWallet=new Label("Posiadasz :" + tablicaUżytkowników.get(0).getHajs());
+                Label labelWallet=new Label("Posiadasz :" + tablicaUzytkowników.get(0).getHajs());
 
                 vBoxWallet.getChildren().addAll(labelWallet);
                 vBoxWallet.setAlignment(Pos.CENTER);
@@ -79,7 +119,28 @@ public class Aplikacja extends Application {
 
         layout.setTop(buttonVBox);
 
-        primaryStage.setScene(s1);
+
+        VBox vBoxLogin=new VBox();
+        vBoxLogin.getChildren().addAll(loginTF,psswdTF,getLogin);
+        layout_login.setCenter(vBoxLogin);
+        vBoxLogin.setAlignment(Pos.CENTER);
+
+
+        primaryStage.setScene(login);
+
+        getLogin.setOnAction(new EventHandler<ActionEvent>(){
+            @Override
+            public void handle(ActionEvent event) {
+                for (Users us:tablicaUzytkowników) {
+                    if(loginTF.getText().equals(us.getName()) && psswdTF.getText().equals(us.getPsswd())){
+                        primaryStage.setScene(s1);
+                        break;
+                    }
+                }
+
+            }
+        });
+
         primaryStage.setTitle("Księgarnia On-line");
         primaryStage.show();
     }
