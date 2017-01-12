@@ -26,9 +26,11 @@ public class Aplikacja extends Application {
     public void start(Stage primaryStage) throws Exception {
         BorderPane layout = new BorderPane();
         BorderPane layout_login = new BorderPane();
+        BorderPane layout_admin = new BorderPane();
 
         Scene login = new Scene(layout_login,300,300);
         Scene s1= new Scene(layout,600,600);
+        Scene s2= new Scene(layout_admin,600,600);
 
         //Login
         TextField loginTF=new TextField("podaj login");
@@ -46,16 +48,21 @@ public class Aplikacja extends Application {
 
         // baza danych Użytkowników, moze być pobierane z innego pliku;
         ArrayList<Users> tablicaUzytkowników = new ArrayList<Users>();
-        tablicaUzytkowników.add(new Users("ziome1","ziomek1","ziomek1"));
+        tablicaUzytkowników.add(new Users("ziomek1","ziomek1","ziomek1"));
         tablicaUzytkowników.add(new Users("admin","admin","admin"));
 
 
 
 
-        Button b0 =new Button("Dostępne");
-        Button b1 =new Button("Wypożycz");
+        Button b0 =new Button("Wypożycz");
+        Button b1 =new Button("Dostępne");
         Button b2 =new Button("Doładuj Portfel");
         Button b3 =new Button("Kwota w portfelu");
+
+
+        Button admin_allBook= new Button("W magazynie");
+        Button admin_allUsers= new Button("Lista Użytkowników");
+        Button admin_addBook= new Button("Dodaj Książkę");
 
         b1.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -114,10 +121,77 @@ public class Aplikacja extends Application {
             }
         });
 
-        HBox buttonVBox=new HBox();
-        buttonVBox.getChildren().addAll(b0,b1,b2,b3);
 
-        layout.setTop(buttonVBox);
+
+        admin_allBook.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                VBox vBoxAllKnigi=new VBox();
+                Label[] lab;
+                lab = new Label[tablicaKsiazek.size()];
+                for (Ksiazka ks:tablicaKsiazek) {
+                    if(ks.getAccess()==true){
+                        vBoxAllKnigi.getChildren().add(new Label(ks.getTitle()));
+                    }
+                }
+
+                vBoxAllKnigi.setAlignment(Pos.CENTER);
+                layout_admin.setCenter(vBoxAllKnigi);
+            }
+        });
+
+        admin_allUsers.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                VBox vBoxAllKnigi=new VBox();
+                Label[] lab;
+                lab = new Label[tablicaKsiazek.size()];
+                for (Users ks:tablicaUzytkowników) {
+                    if(ks.getName().equals("admin")){
+                        vBoxAllKnigi.getChildren().add(new Label("++++++  "+ks.getName()+"  ++++++"));
+                    }
+                    else{
+                        vBoxAllKnigi.getChildren().add(new Label(ks.getName()));
+                    }
+                }
+
+                vBoxAllKnigi.setAlignment(Pos.CENTER);
+                layout_admin.setCenter(vBoxAllKnigi);
+            }
+        });
+
+        admin_addBook.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                Button dodaj=new Button("Dodaj");
+
+                Label writeHere=new Label("Tu wpisz kolejno :");
+
+                TextField adminID=new TextField("Wpisz ID");
+                TextField adminTitle=new TextField("Wpisz tytuł");
+                TextField adminAuthor=new TextField("Wpisz Autora");
+                TextField adminisbn=new TextField("Wpisz isbn");
+
+                VBox vBoxAddBook=new VBox();
+                vBoxAddBook.getChildren().addAll(writeHere,adminID,adminTitle,adminAuthor,adminisbn,dodaj);
+                vBoxAddBook.setAlignment(Pos.CENTER);
+
+                dodaj.setOnAction(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent event) {
+                        int idParseInt=Integer.parseInt(adminID.getText());
+                        tablicaKsiazek.add(new Ksiazka(idParseInt,adminTitle.getText(),adminAuthor.getText(),
+                                adminisbn.getText()));
+                    }
+                });
+
+                layout_admin.setCenter(vBoxAddBook);
+            }
+        });
+
+        HBox buttonVBox=new HBox();
+//        buttonVBox.getChildren().addAll(b0,b1,b2,b3);
+//        layout.setTop(buttonVBox);
 
 
         VBox vBoxLogin=new VBox();
@@ -125,15 +199,37 @@ public class Aplikacja extends Application {
         layout_login.setCenter(vBoxLogin);
         vBoxLogin.setAlignment(Pos.CENTER);
 
+        HBox adminHBox=new HBox();
+//        adminHBox.getChildren().addAll();
+//        adminHBox.setAlignment(Pos.CENTER);
+//        layout_admin.setTop(adminHBox);
+
 
         primaryStage.setScene(login);
 
         getLogin.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
+                boolean IfAdmin;
                 for (Users us:tablicaUzytkowników) {
                     if(loginTF.getText().equals(us.getName()) && psswdTF.getText().equals(us.getPsswd())){
-                        primaryStage.setScene(s1);
+                        if (loginTF.getText().equals("admin")){
+
+                            //ADMIN
+
+                            adminHBox.getChildren().addAll(admin_allBook,admin_allUsers,admin_addBook);
+                            adminHBox.setAlignment(Pos.CENTER);
+                            layout_admin.setTop(adminHBox);
+                            primaryStage.setScene(s2);
+                        }
+                        else {
+                            buttonVBox.getChildren().addAll(b0,b1,b2,b3);
+                            buttonVBox.setAlignment(Pos.CENTER);
+                            layout.setTop(buttonVBox);
+
+                            primaryStage.setScene(s1);
+
+                        }
                         break;
                     }
                 }
