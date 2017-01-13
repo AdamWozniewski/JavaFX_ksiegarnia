@@ -5,6 +5,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -64,13 +65,58 @@ public class Aplikacja extends Application {
         Button admin_allUsers= new Button("Lista Użytkowników");
         Button admin_addBook= new Button("Dodaj Książkę");
 
+        b0.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                VBox vb =new VBox();
+                HBox hb =new HBox();
+                int i=0;
+                for (Ksiazka ks: tablicaKsiazek) {
+                    boolean status;
+                    CheckBox ksBox=new CheckBox(ks.getTitle());
+                    if(ks.getAccess()!=false){
+
+                        ksBox.setSelected(true);
+                        status=true;
+                    }
+                    else{
+
+                        ksBox.setSelected(false);
+                        status=false;
+                    }
+                    vb.getChildren().addAll(ksBox);
+
+                    ksBox.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            if(status == false){
+                                ksBox.setSelected(true);
+                                ks.changeAccess(true);
+                            }
+                            else{
+                                ksBox.setSelected(false);
+                                ks.changeAccess(false);
+
+                            }
+
+                        }
+                    });
+
+                    i++;
+                }
+
+                vb.setAlignment(Pos.CENTER);
+                layout.setCenter(vb);
+            }
+        });
+
         b1.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
 
                 VBox vBoxAllKnigi=new VBox();
                 Label[] lab;
-                lab = new Label[tablicaKsiazek.size()];
+//                lab = new Label[tablicaKsiazek.size()];
                 for (Ksiazka ks:tablicaKsiazek) {
                     if(ks.getAccess()==true){
                         vBoxAllKnigi.getChildren().add(new Label(ks.getTitle()));
