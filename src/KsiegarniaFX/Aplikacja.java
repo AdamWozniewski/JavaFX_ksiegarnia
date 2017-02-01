@@ -59,11 +59,19 @@ public class Aplikacja extends Application {
         Button b1 =new Button("Dostępne");
         Button b2 =new Button("Doładuj Portfel");
         Button b3 =new Button("Kwota w portfelu");
+        Button b4 =new Button("Wyloguj");
 
 
         Button admin_allBook= new Button("W magazynie");
         Button admin_allUsers= new Button("Lista Użytkowników");
         Button admin_addBook= new Button("Dodaj Książkę");
+        Button admin_wylog= new Button("Wyloguj");
+
+
+
+        // WYLOGOWANIE SIE
+
+
 
         b0.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -253,6 +261,22 @@ public class Aplikacja extends Application {
 
         primaryStage.setScene(login);
 
+
+
+//        Budowanie scen
+//        uzytkownik
+
+        buttonVBox.getChildren().addAll(b0,b1,b2,b3,b4);
+        buttonVBox.setAlignment(Pos.CENTER);
+        layout.setTop(buttonVBox);
+
+//        admin
+
+        adminHBox.getChildren().addAll(admin_allBook,admin_allUsers,admin_addBook,admin_wylog);
+        adminHBox.setAlignment(Pos.CENTER);
+        layout_admin.setTop(adminHBox);
+
+
         getLogin.setOnAction(new EventHandler<ActionEvent>(){
             @Override
             public void handle(ActionEvent event) {
@@ -263,15 +287,11 @@ public class Aplikacja extends Application {
 
                             //ADMIN
 
-                            adminHBox.getChildren().addAll(admin_allBook,admin_allUsers,admin_addBook);
-                            adminHBox.setAlignment(Pos.CENTER);
-                            layout_admin.setTop(adminHBox);
+
                             primaryStage.setScene(s2);
                         }
                         else {
-                            buttonVBox.getChildren().addAll(b0,b1,b2,b3);
-                            buttonVBox.setAlignment(Pos.CENTER);
-                            layout.setTop(buttonVBox);
+
 
                             primaryStage.setScene(s1);
 
@@ -283,7 +303,26 @@ public class Aplikacja extends Application {
             }
         });
 
+        admin_wylog.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                primaryStage.setScene(login);
+                loginTF.setText("Podaj login");
+                psswdTF.setText("Podaj hasło");
+
+            }
+        });
+        b4.setOnAction(new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+                primaryStage.setScene(login);
+                loginTF.setText("Podaj login");
+                psswdTF.setText("Podaj hasło");
+            }
+        });
         primaryStage.setTitle("Księgarnia On-line");
         primaryStage.show();
     }
+
+
 }
